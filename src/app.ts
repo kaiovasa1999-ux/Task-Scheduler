@@ -1,3 +1,33 @@
+//project STate mangare
+
+class ProjectState{
+    private projects: any[] = [];
+    private static instance: ProjectState;
+    private constructor(){
+    }
+
+    public static getInstance() : ProjectState{
+        if(this.instance){
+            return this.instance;
+        }
+        this.instance = new ProjectState();
+        return this.instance;
+    }
+
+    addProject(title:string, desc: string, people:number){
+        const newProject = {
+            id: Math.random().toString(),
+            title: title,
+            desc: desc,
+            people: people
+        }
+
+        this.projects.push(newProject);
+    }
+}
+
+const projectState = ProjectState.getInstance();
+
 //input validation
 interface Validatable{
     value: string | number;
@@ -67,6 +97,10 @@ class ProjectList {
 
     private attach(){
         this.hostElement.insertAdjacentElement('beforeend',this.element);
+    }
+
+    addProject(){
+
     }
 }
 
@@ -143,6 +177,7 @@ class ProjectInput {
             //tupple is array acutaliy
             const [title,desc,people] = userInput;
             console.log(title,desc,people);
+            projectState.addProject(title,desc,people);//
             this.clearInputs();
         }
         

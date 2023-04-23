@@ -1,10 +1,33 @@
 "use strict";
+//project STate mangare
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+class ProjectState {
+    constructor() {
+        this.projects = [];
+    }
+    static getInstance() {
+        if (this.instance) {
+            return this.instance;
+        }
+        this.instance = new ProjectState();
+        return this.instance;
+    }
+    addProject(title, desc, people) {
+        const newProject = {
+            id: Math.random().toString(),
+            title: title,
+            desc: desc,
+            people: people
+        };
+        this.projects.push(newProject);
+    }
+}
+const projectState = ProjectState.getInstance();
 function inputValidator(input) {
     let isValid = true;
     if (input.required) {
@@ -54,6 +77,8 @@ class ProjectList {
     }
     attach() {
         this.hostElement.insertAdjacentElement('beforeend', this.element);
+    }
+    addProject() {
     }
 }
 //ProjectINput class
@@ -112,6 +137,7 @@ class ProjectInput {
             //tupple is array acutaliy
             const [title, desc, people] = userInput;
             console.log(title, desc, people);
+            projectState.addProject(title, desc, people); //
             this.clearInputs();
         }
     }
