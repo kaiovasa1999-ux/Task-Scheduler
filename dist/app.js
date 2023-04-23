@@ -30,9 +30,29 @@ class ProjectInput {
         this.configure();
         this.attach();
     }
+    gethereUserInput() {
+        const titleInputValue = this.titleInputElement.value;
+        const descInputValue = this.descrptionInputElemen.value;
+        const peopleInputValue = this.peoleInputElement.value;
+        if (titleInputValue.trim().length === 0 ||
+            descInputValue.trim().length === 0 ||
+            peopleInputValue.trim().length === 0) {
+            alert('invalid input please put longer inputs');
+            return;
+        }
+        else {
+            return [titleInputValue, descInputValue, +peopleInputValue];
+        }
+    }
     submitHandler(event) {
         event.preventDefault();
-        console.log(this.titleInputElement.value);
+        // console.log(this.titleInputElement.value);
+        const userInput = this.gethereUserInput();
+        if (Array.isArray(userInput)) {
+            //tupple is array acutaliy
+            const [title, desc, people] = userInput;
+            console.log(title, desc, people);
+        }
     }
     attach() {
         this.hostElement.insertAdjacentElement('afterbegin', this.element);
