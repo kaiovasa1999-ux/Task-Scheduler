@@ -36,6 +36,27 @@ function AutoBind(_, _2, descriptor) {
     };
     return adjDescriptor;
 }
+class ProjectList {
+    constructor(type) {
+        this.type = type;
+        this.templateElement = document.getElementById('project-list');
+        this.hostElement = document.getElementById('app');
+        const importNode = document.importNode(this.templateElement.content, true);
+        this.element = importNode.firstElementChild;
+        this.element.id = `${this.type}-projects`;
+        this.attach();
+        this.renderContent();
+    }
+    renderContent() {
+        const listId = `${this.type}-project-list`;
+        this.element.querySelector('ul').id = listId;
+        this.element.querySelector('h2').textContent = this.type.toUpperCase() + ' PROJECTS';
+    }
+    attach() {
+        this.hostElement.insertAdjacentElement('beforeend', this.element);
+    }
+}
+//ProjectINput class
 class ProjectInput {
     constructor() {
         this.templateElement = document.getElementById('project-input');
@@ -78,6 +99,11 @@ class ProjectInput {
             return [titleInputValue, descInputValue, +peopleInputValue];
         }
     }
+    clearInputs() {
+        this.titleInputElement.value = '';
+        this.descrptionInputElemen.value = '';
+        this.peoleInputElement.value = '';
+    }
     submitHandler(event) {
         event.preventDefault();
         // console.log(this.titleInputElement.value);
@@ -86,6 +112,7 @@ class ProjectInput {
             //tupple is array acutaliy
             const [title, desc, people] = userInput;
             console.log(title, desc, people);
+            this.clearInputs();
         }
     }
     attach() {
@@ -99,3 +126,5 @@ __decorate([
     AutoBind
 ], ProjectInput.prototype, "submitHandler", null);
 const input = new ProjectInput();
+const projectListActive = new ProjectList('active');
+const projectListFinished = new ProjectList('finished');
