@@ -1,3 +1,34 @@
+//input validation
+interface Validatable{
+    value: string | number;
+    required?: boolean;
+    minLength?: number;
+    maxLength?: number;
+    min?: number;
+    max?: number;
+}
+
+function inputValidator(input: Validatable){
+    let isValid = true;
+    if(input.required){
+        isValid = isValid && input.value.toString().trim().length !== 0;
+    }
+    if(input.minLength != null && typeof input.value === 'string'){
+        isValid = isValid &&  input.value.length >= input.minLength;
+    }
+    if(input.maxLength != null && typeof input.value === 'string'){
+        isValid = isValid &&  input.value.length <= input.maxLength;
+    }
+    if(input.min != null && typeof input.value === 'number'){
+        isValid = isValid && input.value > input.min;
+    }
+    if(input.max != null && typeof input.value === 'number'){
+        isValid = isValid && input.value < input.max
+    }
+
+    return isValid;
+}
+
 //autobind decorator
 function AutoBind(_: any, _2: string, descriptor: PropertyDescriptor){
     const originalMetohd= descriptor.value;
@@ -40,10 +71,26 @@ class ProjectInput {
         const descInputValue = this.descrptionInputElemen.value;
         const peopleInputValue = this.peoleInputElement.value;
 
+        const titleInputValueValidatable: Validatable = {
+            value: titleInputValue,
+            required: true,
+        }
+        const descInputValueValidatable: Validatable = {
+            value: descInputValue,
+            required: true,
+            minLength:3
+        }
+        const peopleInputValueValidatable: Validatable = {
+            value: +peopleInputValue,
+            required: true,
+            min: 1,
+            max: 3
+        }
+
         if(
-            titleInputValue.trim().length === 0 ||
-            descInputValue.trim().length === 0 ||
-            peopleInputValue.trim().length === 0
+            !inputValidator(titleInputValueValidatable) &&
+            !inputValidator(descInputValueValidatable) &&
+            !inputValidator(peopleInputValueValidatable)
         ) {
             alert('invalid input please put longer inputs')
             return;

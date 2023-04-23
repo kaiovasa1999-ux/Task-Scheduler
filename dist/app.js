@@ -5,6 +5,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+function inputValidator(input) {
+    let isValid = true;
+    if (input.required) {
+        isValid = isValid && input.value.toString().trim().length !== 0;
+    }
+    if (input.minLength != null && typeof input.value === 'string') {
+        isValid = isValid && input.value.length >= input.minLength;
+    }
+    if (input.maxLength != null && typeof input.value === 'string') {
+        isValid = isValid && input.value.length <= input.maxLength;
+    }
+    if (input.min != null && typeof input.value === 'number') {
+        isValid = isValid && input.value > input.min;
+    }
+    if (input.max != null && typeof input.value === 'number') {
+        isValid = isValid && input.value < input.max;
+    }
+    return isValid;
+}
 //autobind decorator
 function AutoBind(_, _2, descriptor) {
     const originalMetohd = descriptor.value;
@@ -34,9 +53,24 @@ class ProjectInput {
         const titleInputValue = this.titleInputElement.value;
         const descInputValue = this.descrptionInputElemen.value;
         const peopleInputValue = this.peoleInputElement.value;
-        if (titleInputValue.trim().length === 0 ||
-            descInputValue.trim().length === 0 ||
-            peopleInputValue.trim().length === 0) {
+        const titleInputValueValidatable = {
+            value: titleInputValue,
+            required: true,
+        };
+        const descInputValueValidatable = {
+            value: descInputValue,
+            required: true,
+            minLength: 3
+        };
+        const peopleInputValueValidatable = {
+            value: +peopleInputValue,
+            required: true,
+            min: 1,
+            max: 3
+        };
+        if (!inputValidator(titleInputValueValidatable) &&
+            !inputValidator(descInputValueValidatable) &&
+            !inputValidator(peopleInputValueValidatable)) {
             alert('invalid input please put longer inputs');
             return;
         }
