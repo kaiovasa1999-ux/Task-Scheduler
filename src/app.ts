@@ -1,3 +1,13 @@
+class Project{
+    constructor(
+        public id: string,
+        public Title:string,
+        public description:string,
+        public people:number
+    ){}
+}
+
+type Listener(items: any[]) => void;
 //project STate mangare
 
 class ProjectState{
