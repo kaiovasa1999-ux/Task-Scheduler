@@ -13,7 +13,7 @@ class Project{
     ){}
 }
 
-type Listener = (items: any[]) => void;
+type Listener = (items: Project[]) => void;
 //project STate mangare
 
 class ProjectState{
@@ -96,7 +96,7 @@ class ProjectList {
     templateElement: HTMLTemplateElement;
     hostElement: HTMLDivElement;
     element : HTMLElement;
-    assignedProjects: any[];
+    assignedProjects: Project[];
 
     constructor(private type: 'active' | 'finished'){
         this.templateElement = document.getElementById('project-list')! as HTMLTemplateElement;
@@ -107,10 +107,9 @@ class ProjectList {
         this.element = importNode.firstElementChild as HTMLElement;
         this.element.id = `${this.type}-projects`;
 
-        projectState.addListener((projects:any) =>{
+        projectState.addListener((projects) =>{
             this.assignedProjects = projects;
             this.renderProjects()
-            console.log('asfsg eeee')
         })
         this.attach();
         this.renderContent();
@@ -120,7 +119,7 @@ class ProjectList {
         const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
         for (const prjItem of this.assignedProjects) {
           const listItem = document.createElement('li');
-          listItem.textContent = prjItem.title;
+          listItem.textContent = prjItem.Title;
           listEl.appendChild(listItem)
         }
     }
@@ -128,14 +127,11 @@ class ProjectList {
         const listId = `${this.type}-project-list`;
         this.element.querySelector('ul')!.id =listId;
         this.element.querySelector('h2')!.textContent = this.type.toUpperCase() + ' PROJECTS';
-
     }
 
     private attach(){
         this.hostElement.insertAdjacentElement('beforeend',this.element);
     }
-
-
 }
 
 
