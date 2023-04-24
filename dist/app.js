@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 class ProjectState {
     constructor() {
+        this.listeners = []; //is array from functions actualy
         this.projects = [];
     }
     static getInstance() {
@@ -25,6 +26,12 @@ class ProjectState {
             people: people
         };
         this.projects.push(newProject);
+        this.listeners.forEach(func => {
+            func(this.projects.slice());
+        });
+    }
+    addListener(listenerFn) {
+        this.listeners.push(listenerFn);
     }
 }
 const projectState = ProjectState.getInstance();
@@ -64,11 +71,25 @@ class ProjectList {
         this.type = type;
         this.templateElement = document.getElementById('project-list');
         this.hostElement = document.getElementById('app');
+        this.assignedProjects = [];
         const importNode = document.importNode(this.templateElement.content, true);
         this.element = importNode.firstElementChild;
         this.element.id = `${this.type}-projects`;
+        projectState.addListener((projects) => {
+            this.assignedProjects = projects;
+            this.renderProjects();
+            console.log('asfsg eeee');
+        });
         this.attach();
         this.renderContent();
+    }
+    renderProjects() {
+        const listEl = document.getElementById(`${this.type}-projects-list`);
+        for (const prjItem of this.assignedProjects) {
+            const listItem = document.createElement('li');
+            listItem.textContent = prjItem.title;
+            listEl.appendChild(listItem);
+        }
     }
     renderContent() {
         const listId = `${this.type}-project-list`;
@@ -77,8 +98,6 @@ class ProjectList {
     }
     attach() {
         this.hostElement.insertAdjacentElement('beforeend', this.element);
-    }
-    addProject() {
     }
 }
 //ProjectINput class
@@ -106,13 +125,10 @@ class ProjectInput {
         const descInputValueValidatable = {
             value: descInputValue,
             required: true,
-            minLength: 3
         };
         const peopleInputValueValidatable = {
             value: +peopleInputValue,
             required: true,
-            min: 1,
-            max: 3
         };
         if (!inputValidator(titleInputValueValidatable) &&
             !inputValidator(descInputValueValidatable) &&
@@ -123,11 +139,6 @@ class ProjectInput {
         else {
             return [titleInputValue, descInputValue, +peopleInputValue];
         }
-    }
-    clearInputs() {
-        this.titleInputElement.value = '';
-        this.descrptionInputElemen.value = '';
-        this.peoleInputElement.value = '';
     }
     submitHandler(event) {
         event.preventDefault();
@@ -140,6 +151,11 @@ class ProjectInput {
             projectState.addProject(title, desc, people); //
             this.clearInputs();
         }
+    }
+    clearInputs() {
+        this.titleInputElement.value = '';
+        this.descrptionInputElemen.value = '';
+        this.peoleInputElement.value = '';
     }
     attach() {
         this.hostElement.insertAdjacentElement('afterbegin', this.element);
