@@ -1,18 +1,24 @@
+enum ProjectStatus{
+    Active,
+    Finished
+}
+
 class Project{
     constructor(
         public id: string,
         public Title:string,
         public description:string,
-        public people:number
+        public people:number,
+        public stattus: ProjectStatus
     ){}
 }
 
-type Listener(items: any[]) => void;
+type Listener = (items: any[]) => void;
 //project STate mangare
 
 class ProjectState{
-    private listeners: any[] = [];//is array from functions actualy
-    private projects: any[] = [];
+    private listeners: Listener[] = [];//is array from functions actualy
+    private projects: Project[] = [];
     private static instance: ProjectState;
     private constructor(){
     }
@@ -26,12 +32,8 @@ class ProjectState{
     }
 
     addProject(title:string, desc: string, people:number){
-        const newProject = {
-            id: Math.random().toString(),
-            title: title,
-            desc: desc,
-            people: people
-        }
+        const newProject = new Project(
+            Math.random.toString(),title,desc,people,ProjectStatus.Active)
 
         this.projects.push(newProject);
         this.listeners.forEach(func => {
@@ -39,7 +41,7 @@ class ProjectState{
         });
     }
 
-    addListener(listenerFn: Function){
+    addListener(listenerFn: Listener){
         this.listeners.push(listenerFn);
     }
 }
