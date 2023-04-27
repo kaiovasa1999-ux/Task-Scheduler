@@ -1,11 +1,25 @@
 "use strict";
-//project STate mangare
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var ProjectStatus;
+(function (ProjectStatus) {
+    ProjectStatus[ProjectStatus["Active"] = 0] = "Active";
+    ProjectStatus[ProjectStatus["Finished"] = 1] = "Finished";
+})(ProjectStatus || (ProjectStatus = {}));
+class Project {
+    constructor(id, Title, description, people, stattus) {
+        this.id = id;
+        this.Title = Title;
+        this.description = description;
+        this.people = people;
+        this.stattus = stattus;
+    }
+}
+//project STate mangare
 class ProjectState {
     constructor() {
         this.listeners = []; //is array from functions actualy
@@ -19,12 +33,7 @@ class ProjectState {
         return this.instance;
     }
     addProject(title, desc, people) {
-        const newProject = {
-            id: Math.random().toString(),
-            title: title,
-            desc: desc,
-            people: people
-        };
+        const newProject = new Project(Math.random.toString(), title, desc, people, ProjectStatus.Active);
         this.projects.push(newProject);
         this.listeners.forEach(func => {
             func(this.projects.slice());
@@ -34,6 +43,7 @@ class ProjectState {
         this.listeners.push(listenerFn);
     }
 }
+//global instance single
 const projectState = ProjectState.getInstance();
 function inputValidator(input) {
     let isValid = true;
@@ -76,18 +86,28 @@ class ProjectList {
         this.element = importNode.firstElementChild;
         this.element.id = `${this.type}-projects`;
         projectState.addListener((projects) => {
-            this.assignedProjects = projects;
+            const filterProjects = projects.filter(prj => {
+                if (type === 'active') {
+                    return prj.stattus === ProjectStatus.Active;
+                }
+                return prj.stattus === ProjectStatus.Finished;
+            });
+            debugger;
+            this.assignedProjects = filterProjects;
             this.renderProjects();
-            console.log('asfsg eeee');
         });
         this.attach();
         this.renderContent();
     }
     renderProjects() {
-        const listEl = document.getElementById(`${this.type}-projects-list`);
+        debugger;
+        const listEl = document.getElementById(`${this.type}-projects`);
+        if (this.assignedProjects.length === 0) {
+            console.log('asdfsadf');
+        }
         for (const prjItem of this.assignedProjects) {
             const listItem = document.createElement('li');
-            listItem.textContent = prjItem.title;
+            listItem.textContent = prjItem.Title;
             listEl.appendChild(listItem);
         }
     }

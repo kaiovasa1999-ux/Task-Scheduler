@@ -45,7 +45,7 @@ class ProjectState{
         this.listeners.push(listenerFn);
     }
 }
-
+//global instance single
 const projectState = ProjectState.getInstance();
 
 //input validation
@@ -94,7 +94,7 @@ function AutoBind(_: any, _2: string, descriptor: PropertyDescriptor){
 
 class ProjectList {
     templateElement: HTMLTemplateElement;
-    hostElement: HTMLDivElement;
+    hostElement: HTMLDivElement; 
     element : HTMLElement;
     assignedProjects: Project[];
 
@@ -108,7 +108,14 @@ class ProjectList {
         this.element.id = `${this.type}-projects`;
 
         projectState.addListener((projects) =>{
-            this.assignedProjects = projects;
+            const filterProjects = projects.filter(prj =>{
+                if(type ==='active'){
+                    return prj.stattus === ProjectStatus.Active;
+                }
+                return prj.stattus === ProjectStatus.Finished;
+            })
+            debugger;
+            this.assignedProjects = filterProjects;
             this.renderProjects()
         })
         this.attach();
@@ -116,7 +123,12 @@ class ProjectList {
     }
 
     renderProjects(){
-        const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
+        debugger;
+        const listEl = document.getElementById(`${this.type}-projects`)! as HTMLUListElement;
+        if(this.assignedProjects.length === 0 ){
+            console.log('asdfsadf');
+            
+        }
         for (const prjItem of this.assignedProjects) {
           const listItem = document.createElement('li');
           listItem.textContent = prjItem.Title;
