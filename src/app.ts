@@ -92,6 +92,34 @@ function AutoBind(_: any, _2: string, descriptor: PropertyDescriptor){
     return adjDescriptor;
 }
 
+class BaseComponent<T extends HTMLElement,U extends HTMLElement>{
+    private templateElement: HTMLTemplateElement;
+    private hostElement: T; 
+    element : U;
+    constructor(templateID: string,
+                hostElementId: string,
+                whenToInsert: boolean,
+                elemntId?:string){
+
+        this.templateElement = document.getElementById(templateID)! as HTMLTemplateElement;
+
+        this.hostElement = document.getElementById(hostElementId)! as T;
+        const importedNode = document.importNode(this.templateElement.content, true);
+
+        this.element = importedNode.firstElementChild as U;
+        if(elemntId){
+            this.element.id = elemntId;
+        }
+
+        this.attach(whenToInsert);
+    }
+
+    private attach(whenToInsert:boolean){
+        //if is true isnert afterbegin else beforebegin
+        this.hostElement.insertAdjacentElement(whenToInsert? 'afterbegin': 'beforebegin',this.element);
+    }
+}   
+
 class ProjectList {
     templateElement: HTMLTemplateElement;
     hostElement: HTMLDivElement; 
