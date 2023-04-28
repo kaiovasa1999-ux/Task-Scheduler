@@ -92,7 +92,7 @@ function AutoBind(_: any, _2: string, descriptor: PropertyDescriptor){
     return adjDescriptor;
 }
 
-class BaseComponent<T extends HTMLElement,U extends HTMLElement>{
+abstract class BaseComponent<T extends HTMLElement,U extends HTMLElement>{
     private templateElement: HTMLTemplateElement;
     private hostElement: T; 
     element : U;
@@ -118,26 +118,34 @@ class BaseComponent<T extends HTMLElement,U extends HTMLElement>{
         //if is true isnert afterbegin else beforebegin
         this.hostElement.insertAdjacentElement(whenToInsert? 'afterbegin': 'beforebegin',this.element);
     }
+
+    abstract configure(): void;
+    abstract renderContent():void;
 }   
 
-class ProjectList {
-    templateElement: HTMLTemplateElement;
-    hostElement: HTMLDivElement; 
-    element : HTMLElement;
+class ProjectList  extends BaseComponent<HTMLDivElement,HTMLElement>{
     assignedProjects: Project[];
 
     constructor(private type: 'active' | 'finished'){
-        this.templateElement = document.getElementById('project-list')! as HTMLTemplateElement;
-        this.hostElement = document.getElementById('app')! as HTMLDivElement;
+        super('project-list','app',false,`${type}-projects`);
         this.assignedProjects = [];
-        const importNode = document.importNode(this.templateElement.content,true);
+        this.renderContent();
+    }
 
-        this.element = importNode.firstElementChild as HTMLElement;
-        this.element.id = `${this.type}-projects`;
+    renderProjects(){
+        debugger;
+        const listEl = document.getElementById(`${this.type}-projects`)! as HTMLUListElement;
+        for (const prjItem of this.assignedProjects) {
+          const listItem = document.createElement('li');
+          listItem.textContent = prjItem.Title;
+          listEl.appendChild(listItem)
+        }
+    }
 
+    configure(): void {
         projectState.addListener((projects) =>{
             const filterProjects = projects.filter(prj =>{
-                if(type ==='active'){
+                if(this.type ==='active'){
                     return prj.stattus === ProjectStatus.Active;
                 }
                 return prj.stattus === ProjectStatus.Finished;
@@ -146,31 +154,12 @@ class ProjectList {
             this.assignedProjects = filterProjects;
             this.renderProjects()
         })
-        this.attach();
-        this.renderContent();
     }
 
-    renderProjects(){
-        debugger;
-        const listEl = document.getElementById(`${this.type}-projects`)! as HTMLUListElement;
-        if(this.assignedProjects.length === 0 ){
-            console.log('asdfsadf');
-            
-        }
-        for (const prjItem of this.assignedProjects) {
-          const listItem = document.createElement('li');
-          listItem.textContent = prjItem.Title;
-          listEl.appendChild(listItem)
-        }
-    }
-    private renderContent(){
+    renderContent(){
         const listId = `${this.type}-project-list`;
         this.element.querySelector('ul')!.id =listId;
         this.element.querySelector('h2')!.textContent = this.type.toUpperCase() + ' PROJECTS';
-    }
-
-    private attach(){
-        this.hostElement.insertAdjacentElement('beforeend',this.element);
     }
 }
 
