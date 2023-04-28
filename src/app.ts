@@ -94,7 +94,7 @@ function AutoBind(_: any, _2: string, descriptor: PropertyDescriptor){
 
 abstract class BaseComponent<T extends HTMLElement,U extends HTMLElement>{
     private templateElement: HTMLTemplateElement;
-    private hostElement: T; 
+    protected hostElement: T; 
     element : U;
     constructor(templateID: string,
                 hostElementId: string,
@@ -166,28 +166,21 @@ class ProjectList  extends BaseComponent<HTMLDivElement,HTMLElement>{
 
 
 //ProjectINput class
-class ProjectInput {
-    templateElement: HTMLTemplateElement;
-    hostElement: HTMLDivElement;
-    element: HTMLFormElement;
+class ProjectInput extends BaseComponent<HTMLDivElement,HTMLFormElement> {
+ 
     titleInputElement: HTMLInputElement;
     descrptionInputElemen: HTMLInputElement;
     peoleInputElement: HTMLInputElement;
 
     constructor(){
-        this.templateElement =  document.getElementById('project-input')! as HTMLTemplateElement;
-        this.hostElement = document.getElementById('app')! as HTMLDivElement;
-        
-        const importedNode = document.importNode(this.templateElement.content, true);
-        this.element = importedNode.firstElementChild as HTMLFormElement;
-        this.element.id = 'user-input';
+        super('project-input','app',true,'user-input')
 
         this.titleInputElement = this.element.querySelector('#title') as HTMLInputElement;
         this.descrptionInputElemen = this.element.querySelector('#description') as HTMLInputElement;
         this.peoleInputElement = this.element.querySelector('#people') as HTMLInputElement;
 
         this.configure();
-        this.attach();
+        this.renderContent()
     }
     private gethereUserInput(): [string, string, number] | void {
         const titleInputValue = this.titleInputElement.value;
@@ -240,11 +233,10 @@ class ProjectInput {
         this.peoleInputElement.value = '';
     }
 
-    private attach(){
-        this.hostElement.insertAdjacentElement('afterbegin',this.element);
+    renderContent(): void {
+        
     }
-
-    private configure(){
+    configure(){
         this.element.addEventListener('submit',this.submitHandler);
     }
 }

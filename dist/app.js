@@ -129,18 +129,14 @@ class ProjectList extends BaseComponent {
     }
 }
 //ProjectINput class
-class ProjectInput {
+class ProjectInput extends BaseComponent {
     constructor() {
-        this.templateElement = document.getElementById('project-input');
-        this.hostElement = document.getElementById('app');
-        const importedNode = document.importNode(this.templateElement.content, true);
-        this.element = importedNode.firstElementChild;
-        this.element.id = 'user-input';
+        super('project-input', 'app', true, 'user-input');
         this.titleInputElement = this.element.querySelector('#title');
         this.descrptionInputElemen = this.element.querySelector('#description');
         this.peoleInputElement = this.element.querySelector('#people');
         this.configure();
-        this.attach();
+        this.renderContent();
     }
     gethereUserInput() {
         const titleInputValue = this.titleInputElement.value;
@@ -185,8 +181,7 @@ class ProjectInput {
         this.descrptionInputElemen.value = '';
         this.peoleInputElement.value = '';
     }
-    attach() {
-        this.hostElement.insertAdjacentElement('afterbegin', this.element);
+    renderContent() {
     }
     configure() {
         this.element.addEventListener('submit', this.submitHandler);
