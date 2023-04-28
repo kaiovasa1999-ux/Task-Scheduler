@@ -143,7 +143,7 @@ class ProjectList  extends BaseComponent<HTMLDivElement,HTMLElement>{
         }
     }
 
-    configure(): void {
+    public configure(): void {
         projectState.addListener((projects) =>{
             const filterProjects = projects.filter(prj =>{
                 if(this.type ==='active'){
@@ -178,9 +178,12 @@ class ProjectInput extends BaseComponent<HTMLDivElement,HTMLFormElement> {
         this.titleInputElement = this.element.querySelector('#title') as HTMLInputElement;
         this.descrptionInputElemen = this.element.querySelector('#description') as HTMLInputElement;
         this.peoleInputElement = this.element.querySelector('#people') as HTMLInputElement;
-
         this.configure();
         this.renderContent()
+    }
+
+    public configure(){
+        this.element.addEventListener('submit',this.submitHandler);
     }
     private gethereUserInput(): [string, string, number] | void {
         const titleInputValue = this.titleInputElement.value;
@@ -233,12 +236,8 @@ class ProjectInput extends BaseComponent<HTMLDivElement,HTMLFormElement> {
         this.peoleInputElement.value = '';
     }
 
-    renderContent(): void {
-        
-    }
-    configure(){
-        this.element.addEventListener('submit',this.submitHandler);
-    }
+    renderContent(): void {}
+  
 }
 
 const input = new ProjectInput();
