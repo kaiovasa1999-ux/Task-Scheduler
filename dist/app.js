@@ -76,18 +76,43 @@ function AutoBind(_, _2, descriptor) {
     };
     return adjDescriptor;
 }
-class ProjectList {
+class BaseComponent {
+    constructor(templateID, hostElementId, whenToInsert, elemntId) {
+        this.templateElement = document.getElementById(templateID);
+        this.hostElement = document.getElementById(hostElementId);
+        const importedNode = document.importNode(this.templateElement.content, true);
+        this.element = importedNode.firstElementChild;
+        if (elemntId) {
+            this.element.id = elemntId;
+        }
+        this.attach(whenToInsert);
+    }
+    attach(whenToInsert) {
+        //if is true isnert afterbegin else beforebegin
+        this.hostElement.insertAdjacentElement(whenToInsert ? 'afterbegin' : 'beforebegin', this.element);
+    }
+}
+class ProjectList extends BaseComponent {
     constructor(type) {
+        super('project-list', 'app', false, `${type}-projects`);
         this.type = type;
-        this.templateElement = document.getElementById('project-list');
-        this.hostElement = document.getElementById('app');
         this.assignedProjects = [];
-        const importNode = document.importNode(this.templateElement.content, true);
-        this.element = importNode.firstElementChild;
-        this.element.id = `${this.type}-projects`;
+        this.configure();
+        this.renderContent();
+    }
+    renderProjects() {
+        debugger;
+        const listEl = document.getElementById(`${this.type}-projects`);
+        for (const prjItem of this.assignedProjects) {
+            const listItem = document.createElement('li');
+            listItem.textContent = prjItem.Title;
+            listEl.appendChild(listItem);
+        }
+    }
+    configure() {
         projectState.addListener((projects) => {
             const filterProjects = projects.filter(prj => {
-                if (type === 'active') {
+                if (this.type === 'active') {
                     return prj.stattus === ProjectStatus.Active;
                 }
                 return prj.stattus === ProjectStatus.Finished;
@@ -96,28 +121,11 @@ class ProjectList {
             this.assignedProjects = filterProjects;
             this.renderProjects();
         });
-        this.attach();
-        this.renderContent();
-    }
-    renderProjects() {
-        debugger;
-        const listEl = document.getElementById(`${this.type}-projects`);
-        if (this.assignedProjects.length === 0) {
-            console.log('asdfsadf');
-        }
-        for (const prjItem of this.assignedProjects) {
-            const listItem = document.createElement('li');
-            listItem.textContent = prjItem.Title;
-            listEl.appendChild(listItem);
-        }
     }
     renderContent() {
         const listId = `${this.type}-project-list`;
         this.element.querySelector('ul').id = listId;
         this.element.querySelector('h2').textContent = this.type.toUpperCase() + ' PROJECTS';
-    }
-    attach() {
-        this.hostElement.insertAdjacentElement('beforeend', this.element);
     }
 }
 //ProjectINput class

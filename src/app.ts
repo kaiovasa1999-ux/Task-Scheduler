@@ -129,6 +129,7 @@ class ProjectList  extends BaseComponent<HTMLDivElement,HTMLElement>{
     constructor(private type: 'active' | 'finished'){
         super('project-list','app',false,`${type}-projects`);
         this.assignedProjects = [];
+        this.configure();
         this.renderContent();
     }
 
