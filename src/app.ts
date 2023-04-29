@@ -6,7 +6,7 @@ enum ProjectStatus{
 class Project{
     constructor(
         public id: string,
-        public Title:string,
+        public title:string,
         public description:string,
         public people:number,
         public stattus: ProjectStatus
@@ -111,28 +111,47 @@ abstract class BaseComponent<T extends HTMLElement,U extends HTMLElement>{
                 whenToInsert: boolean,
                 elemntId?:string){
 
-        this.templateElement = document.getElementById(templateID)! as HTMLTemplateElement;
-
-        this.hostElement = document.getElementById(hostElementId)! as T;
-        const importedNode = document.importNode(this.templateElement.content, true);
-
-        this.element = importedNode.firstElementChild as U;
-        if(elemntId){
-            this.element.id = elemntId;
+    this.templateElement = document.getElementById(templateID)! as HTMLTemplateElement;
+    this.hostElement = document.getElementById(hostElementId)! as T;
+    const importedNode = document.importNode(this.templateElement.content,true);
+    this.element = importedNode.firstElementChild as U;
+    if (elemntId) {
+        this.element.id = elemntId;
+       }
+                  
+    this.attach(whenToInsert);
+    }
+                  
+    private attach(insertAtBeginning: boolean) {
+        this.hostElement.insertAdjacentElement(
+            insertAtBeginning ? 'afterbegin' : 'beforeend',this.element);
         }
-
-        this.attach(whenToInsert);
-    }
-
-    private attach(whenToInsert:boolean){
-        //if is true isnert afterbegin else beforebegin
-        this.hostElement.insertAdjacentElement(whenToInsert? 'afterbegin': 'beforebegin',this.element);
-    }
+      
 
     abstract configure(): void;
     abstract renderContent():void;
 }   
 
+class ProjectItem extends BaseComponent<HTMLUListElement,HTMLLIElement>{
+    private project: Project
+    constructor(hostId:string,project: Project){
+        super('single-project', hostId, false, project.id);
+        this.project = project
+
+        this.configure();
+        this.renderContent();
+    }
+    configure(): void {
+        
+    }
+
+    renderContent() {
+        this.element.querySelector('h2')!.textContent = this.project.title;
+        this.element.querySelector('h3')!.textContent = this.project.people.toString();
+        this.element.querySelector('p')!.textContent = this.project.description;
+      }
+}
+  
 class ProjectList extends BaseComponent<HTMLDivElement,HTMLElement>{
     assignedProjects: Project[];
 
@@ -142,16 +161,14 @@ class ProjectList extends BaseComponent<HTMLDivElement,HTMLElement>{
         this.configure();
         this.renderContent();
     }
-
+    
     private renderProjects() {
         const listEl = document.getElementById(
           `${this.type}-project-list`
         )! as HTMLUListElement;
         listEl.innerHTML = '';
         for (const prjItem of this.assignedProjects) {
-          const listItem = document.createElement('li');
-          listItem.textContent = prjItem.Title;
-          listEl.appendChild(listItem);
+          new ProjectItem(this.element.querySelector('ul')!.id, prjItem);
         }
       }
 
@@ -233,12 +250,10 @@ class ProjectInput extends BaseComponent<HTMLDivElement,HTMLFormElement> {
     private submitHandler(event: Event){
         event.preventDefault();
         debugger;
-        // console.log(this.titleInputElement.value);
         const userInput =this.gethereUserInput();
         if(Array.isArray(userInput)){
             //tupple is array acutaliy
             const [title,desc,people] = userInput;
-            console.log(title,desc,people);
             projectState.addProject(title,desc,people);//
             this.clearInputs();
         }
@@ -252,7 +267,6 @@ class ProjectInput extends BaseComponent<HTMLDivElement,HTMLFormElement> {
     }
 
     renderContent(): void {}
-  
 }
 
 const input = new ProjectInput();

@@ -11,9 +11,9 @@ var ProjectStatus;
     ProjectStatus[ProjectStatus["Finished"] = 1] = "Finished";
 })(ProjectStatus || (ProjectStatus = {}));
 class Project {
-    constructor(id, Title, description, people, stattus) {
+    constructor(id, title, description, people, stattus) {
         this.id = id;
-        this.Title = Title;
+        this.title = title;
         this.description = description;
         this.people = people;
         this.stattus = stattus;
@@ -96,9 +96,23 @@ class BaseComponent {
         }
         this.attach(whenToInsert);
     }
-    attach(whenToInsert) {
-        //if is true isnert afterbegin else beforebegin
-        this.hostElement.insertAdjacentElement(whenToInsert ? 'afterbegin' : 'beforebegin', this.element);
+    attach(insertAtBeginning) {
+        this.hostElement.insertAdjacentElement(insertAtBeginning ? 'afterbegin' : 'beforeend', this.element);
+    }
+}
+class ProjectItem extends BaseComponent {
+    constructor(hostId, project) {
+        super('single-project', hostId, false, project.id);
+        this.project = project;
+        this.configure();
+        this.renderContent();
+    }
+    configure() {
+    }
+    renderContent() {
+        this.element.querySelector('h2').textContent = this.project.title;
+        this.element.querySelector('h3').textContent = this.project.people.toString();
+        this.element.querySelector('p').textContent = this.project.description;
     }
 }
 class ProjectList extends BaseComponent {
@@ -113,9 +127,7 @@ class ProjectList extends BaseComponent {
         const listEl = document.getElementById(`${this.type}-project-list`);
         listEl.innerHTML = '';
         for (const prjItem of this.assignedProjects) {
-            const listItem = document.createElement('li');
-            listItem.textContent = prjItem.Title;
-            listEl.appendChild(listItem);
+            new ProjectItem(this.element.querySelector('ul').id, prjItem);
         }
     }
     configure() {
@@ -180,12 +192,10 @@ class ProjectInput extends BaseComponent {
     submitHandler(event) {
         event.preventDefault();
         debugger;
-        // console.log(this.titleInputElement.value);
         const userInput = this.gethereUserInput();
         if (Array.isArray(userInput)) {
             //tupple is array acutaliy
             const [title, desc, people] = userInput;
-            console.log(title, desc, people);
             projectState.addProject(title, desc, people); //
             this.clearInputs();
         }
