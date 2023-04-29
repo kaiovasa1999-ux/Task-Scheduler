@@ -13,14 +13,22 @@ class Project{
     ){}
 }
 
-type Listener = (items: Project[]) => void;
+class State<T> {
+    protected listeners: Listener<T>[] = [];//is array from functions actualy
+
+    addListener(listenerFn: Listener<T>){
+        this.listeners.push(listenerFn);
+    }
+}
+
+type Listener<T> = (items: T[]) => void;
 //project STate mangare
 
-class ProjectState{
-    private listeners: Listener[] = [];//is array from functions actualy
+class ProjectState extends State<Project>{
     private projects: Project[] = [];
     private static instance: ProjectState;
     private constructor(){
+        super()
     }
 
     public static getInstance() : ProjectState{
@@ -43,7 +51,7 @@ class ProjectState{
         }
     }
 
-    addListener(listenerFn: Listener){
+    addListener(listenerFn: Listener<Project>){
         this.listeners.push(listenerFn);
     }
 }
@@ -146,15 +154,6 @@ class ProjectList extends BaseComponent<HTMLDivElement,HTMLElement>{
           listEl.appendChild(listItem);
         }
       }
-    // renderProjects(){
-    //     debugger;
-    //     const listEl = document.getElementById(`${this.type}-project-list`)! as HTMLUListElement;
-    //     for (const prjItem of this.assignedProjects) {
-    //       const listItem = document.createElement('li');
-    //       listItem.textContent = prjItem.Title;
-    //       listEl.appendChild(listItem)
-    //     }
-    // }
 
     public configure(): void {
         projectState.addListener((projects) =>{

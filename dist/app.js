@@ -19,10 +19,18 @@ class Project {
         this.stattus = stattus;
     }
 }
-//project STate mangare
-class ProjectState {
+class State {
     constructor() {
         this.listeners = []; //is array from functions actualy
+    }
+    addListener(listenerFn) {
+        this.listeners.push(listenerFn);
+    }
+}
+//project STate mangare
+class ProjectState extends State {
+    constructor() {
+        super();
         this.projects = [];
     }
     static getInstance() {
@@ -110,15 +118,6 @@ class ProjectList extends BaseComponent {
             listEl.appendChild(listItem);
         }
     }
-    // renderProjects(){
-    //     debugger;
-    //     const listEl = document.getElementById(`${this.type}-project-list`)! as HTMLUListElement;
-    //     for (const prjItem of this.assignedProjects) {
-    //       const listItem = document.createElement('li');
-    //       listItem.textContent = prjItem.Title;
-    //       listEl.appendChild(listItem)
-    //     }
-    // }
     configure() {
         projectState.addListener((projects) => {
             const filterProjects = projects.filter(prj => {
