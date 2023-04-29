@@ -33,11 +33,12 @@ class ProjectState {
         return this.instance;
     }
     addProject(title, desc, people) {
+        debugger;
         const newProject = new Project(Math.random.toString(), title, desc, people, ProjectStatus.Active);
         this.projects.push(newProject);
-        this.listeners.forEach(func => {
-            func(this.projects.slice());
-        });
+        for (const listenerFn of this.listeners) {
+            listenerFn(this.projects.slice());
+        }
     }
     addListener(listenerFn) {
         this.listeners.push(listenerFn);
@@ -101,14 +102,23 @@ class ProjectList extends BaseComponent {
         this.renderContent();
     }
     renderProjects() {
-        debugger;
-        const listEl = document.getElementById(`${this.type}-projects`);
+        const listEl = document.getElementById(`${this.type}-project-list`);
+        listEl.innerHTML = '';
         for (const prjItem of this.assignedProjects) {
             const listItem = document.createElement('li');
             listItem.textContent = prjItem.Title;
             listEl.appendChild(listItem);
         }
     }
+    // renderProjects(){
+    //     debugger;
+    //     const listEl = document.getElementById(`${this.type}-project-list`)! as HTMLUListElement;
+    //     for (const prjItem of this.assignedProjects) {
+    //       const listItem = document.createElement('li');
+    //       listItem.textContent = prjItem.Title;
+    //       listEl.appendChild(listItem)
+    //     }
+    // }
     configure() {
         projectState.addListener((projects) => {
             const filterProjects = projects.filter(prj => {
@@ -138,6 +148,10 @@ class ProjectInput extends BaseComponent {
         this.configure();
         this.renderContent();
     }
+    configure() {
+        debugger;
+        this.element.addEventListener('submit', this.submitHandler);
+    }
     gethereUserInput() {
         const titleInputValue = this.titleInputElement.value;
         const descInputValue = this.descrptionInputElemen.value;
@@ -166,6 +180,7 @@ class ProjectInput extends BaseComponent {
     }
     submitHandler(event) {
         event.preventDefault();
+        debugger;
         // console.log(this.titleInputElement.value);
         const userInput = this.gethereUserInput();
         if (Array.isArray(userInput)) {
@@ -181,11 +196,7 @@ class ProjectInput extends BaseComponent {
         this.descrptionInputElemen.value = '';
         this.peoleInputElement.value = '';
     }
-    renderContent() {
-    }
-    configure() {
-        this.element.addEventListener('submit', this.submitHandler);
-    }
+    renderContent() { }
 }
 __decorate([
     AutoBind

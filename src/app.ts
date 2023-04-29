@@ -32,13 +32,15 @@ class ProjectState{
     }
 
     addProject(title:string, desc: string, people:number){
+        debugger;
         const newProject = new Project(
             Math.random.toString(),title,desc,people,ProjectStatus.Active)
 
         this.projects.push(newProject);
-        this.listeners.forEach(func => {
-            func(this.projects.slice());
-        });
+
+        for (const listenerFn of this.listeners) {
+            listenerFn(this.projects.slice());
+        }
     }
 
     addListener(listenerFn: Listener){
@@ -123,7 +125,7 @@ abstract class BaseComponent<T extends HTMLElement,U extends HTMLElement>{
     abstract renderContent():void;
 }   
 
-class ProjectList  extends BaseComponent<HTMLDivElement,HTMLElement>{
+class ProjectList extends BaseComponent<HTMLDivElement,HTMLElement>{
     assignedProjects: Project[];
 
     constructor(private type: 'active' | 'finished'){
@@ -133,15 +135,26 @@ class ProjectList  extends BaseComponent<HTMLDivElement,HTMLElement>{
         this.renderContent();
     }
 
-    renderProjects(){
-        debugger;
-        const listEl = document.getElementById(`${this.type}-projects`)! as HTMLUListElement;
+    private renderProjects() {
+        const listEl = document.getElementById(
+          `${this.type}-project-list`
+        )! as HTMLUListElement;
+        listEl.innerHTML = '';
         for (const prjItem of this.assignedProjects) {
           const listItem = document.createElement('li');
           listItem.textContent = prjItem.Title;
-          listEl.appendChild(listItem)
+          listEl.appendChild(listItem);
         }
-    }
+      }
+    // renderProjects(){
+    //     debugger;
+    //     const listEl = document.getElementById(`${this.type}-project-list`)! as HTMLUListElement;
+    //     for (const prjItem of this.assignedProjects) {
+    //       const listItem = document.createElement('li');
+    //       listItem.textContent = prjItem.Title;
+    //       listEl.appendChild(listItem)
+    //     }
+    // }
 
     public configure(): void {
         projectState.addListener((projects) =>{
@@ -149,6 +162,7 @@ class ProjectList  extends BaseComponent<HTMLDivElement,HTMLElement>{
                 if(this.type ==='active'){
                     return prj.stattus === ProjectStatus.Active;
                 }
+
                 return prj.stattus === ProjectStatus.Finished;
             })
             debugger;
@@ -183,6 +197,7 @@ class ProjectInput extends BaseComponent<HTMLDivElement,HTMLFormElement> {
     }
 
     public configure(){
+        debugger;
         this.element.addEventListener('submit',this.submitHandler);
     }
     private gethereUserInput(): [string, string, number] | void {
@@ -218,6 +233,7 @@ class ProjectInput extends BaseComponent<HTMLDivElement,HTMLFormElement> {
     @AutoBind
     private submitHandler(event: Event){
         event.preventDefault();
+        debugger;
         // console.log(this.titleInputElement.value);
         const userInput =this.gethereUserInput();
         if(Array.isArray(userInput)){
