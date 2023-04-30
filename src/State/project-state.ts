@@ -57,6 +57,6 @@ namespace App {
         }
     }
 
-    //global instance single
+    //global instance-single
     export const projectState = ProjectState.getInstance();
 }

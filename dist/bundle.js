@@ -12,16 +12,6 @@ var App;
         ProjectStatus[ProjectStatus["Active"] = 0] = "Active";
         ProjectStatus[ProjectStatus["Finished"] = 1] = "Finished";
     })(ProjectStatus = App.ProjectStatus || (App.ProjectStatus = {}));
-    class Project {
-        constructor(id, title, description, people, stattus) {
-            this.id = id;
-            this.title = title;
-            this.description = description;
-            this.people = people;
-            this.stattus = stattus;
-        }
-    }
-    App.Project = Project;
 })(App || (App = {}));
 var App;
 (function (App) {
@@ -71,7 +61,7 @@ var App;
         }
     }
     App.ProjectState = ProjectState;
-    //global instance single
+    //global instance-single
     App.projectState = ProjectState.getInstance();
 })(App || (App = {}));
 var App;
@@ -302,6 +292,19 @@ var App;
     ], ProjectList.prototype, "dragLeaveHandler", null);
     App.ProjectList = ProjectList;
 })(App || (App = {}));
+var App;
+(function (App) {
+    class Project {
+        constructor(id, title, description, people, stattus) {
+            this.id = id;
+            this.title = title;
+            this.description = description;
+            this.people = people;
+            this.stattus = stattus;
+        }
+    }
+    App.Project = Project;
+})(App || (App = {}));
 /// <reference path="Models/drag-drop.ts" />
 /// <reference path="Enums/ProjectStatus.ts" />
 /// <reference path="State/project-state.ts" />
@@ -311,6 +314,7 @@ var App;
 /// <reference path="Components/ProjectInput.ts" />
 /// <reference path="Components/ProjectItem.ts" />
 /// <reference path="Components/ProjectList.ts" />
+/// <reference path="Components/Project.ts" />
 var App;
 (function (App) {
     new App.ProjectInput();

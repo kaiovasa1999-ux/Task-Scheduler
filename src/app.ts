@@ -7,6 +7,7 @@
 /// <reference path="Components/ProjectInput.ts" />
 /// <reference path="Components/ProjectItem.ts" />
 /// <reference path="Components/ProjectList.ts" />
+/// <reference path="Components/Project.ts" />
 
 namespace App {
     new ProjectInput();
