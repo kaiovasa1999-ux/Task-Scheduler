@@ -49,10 +49,10 @@ class ProjectState extends State {
         }
         this.updateListeners();
     }
-    switchProjectStatus(projectId, newStatues) {
+    switchProjectStatus(projectId, newStatus) {
         const project = this.projects.find(p => p.id === projectId);
-        if (project) {
-            project.stattus = newStatues;
+        if (project != null && project.stattus != newStatus) {
+            project.stattus = newStatus;
             this.updateListeners();
         }
     }
