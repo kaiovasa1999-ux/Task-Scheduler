@@ -112,11 +112,11 @@ var App;
     }
     App.AutoBind = AutoBind;
 })(App || (App = {}));
-/// <reference path="drag-drop-interfaces.ts" />
-/// <reference path="enums.ts" />
-/// <reference path="project-state.ts" />
-/// <reference path="validations.ts" />
-/// <reference path="decorators.ts" />
+/// <reference path="Models/drag-drop.ts" />
+/// <reference path="Enums/ProjectStatus.ts" />
+/// <reference path="State/project-state.ts" />
+/// <reference path="Util/validations.ts" />
+/// <reference path="Decorators/Autobind.ts" />
 var App;
 (function (App) {
     class BaseComponent {
