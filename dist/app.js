@@ -1,4 +1,5 @@
 "use strict";
+//Drag and drop interface
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -115,7 +116,15 @@ class ProjectItem extends BaseComponent {
         this.configure();
         this.renderContent();
     }
+    dragStartHandler(event) {
+        console.log('drag start');
+    }
+    dragEndHandler(event) {
+        console.log('drag End');
+    }
     configure() {
+        this.element.addEventListener('dragstart', this.dragStartHandler);
+        this.element.addEventListener('dragend', this.dragEndHandler);
     }
     renderContent() {
         this.element.querySelector('h2').textContent = this.project.title;
@@ -123,6 +132,12 @@ class ProjectItem extends BaseComponent {
         this.element.querySelector('p').textContent = this.project.description;
     }
 }
+__decorate([
+    AutoBind
+], ProjectItem.prototype, "dragStartHandler", null);
+__decorate([
+    AutoBind
+], ProjectItem.prototype, "dragEndHandler", null);
 class ProjectList extends BaseComponent {
     constructor(type) {
         super('project-list', 'app', false, `${type}-projects`);
