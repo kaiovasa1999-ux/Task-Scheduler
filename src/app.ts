@@ -1,113 +1,11 @@
 /// <reference path="drag-drop-interfaces.ts" />
 /// <reference path="enums.ts" />
+/// <reference path="project-state.ts" />
+/// <reference path="validations.ts" />
+/// <reference path="decorators.ts" />
 
-namespace DragDrop {
+namespace App {
 
-    
-    class State<T> {
-        protected listeners: Listener<T>[] = [];//is array from functions actualy
-    
-        addListener(listenerFn: Listener<T>){
-            this.listeners.push(listenerFn);
-        }
-    }
-    
-    type Listener<T> = (items: T[]) => void;
-    //project STate mangare
-    
-    class ProjectState extends State<Project>{
-        private projects: Project[] = [];
-        private static instance: ProjectState;
-        private constructor(){
-            super()
-        }
-    
-        public static getInstance() : ProjectState{
-            if(this.instance){
-                return this.instance;
-            }
-            this.instance = new ProjectState();
-            return this.instance;
-        }
-    
-        addProject(title:string, desc: string, people:number){
-            const newProject = new Project(
-                Math.random().toString(),title,desc,people,ProjectStatus.Active)
-    
-            this.projects.push(newProject);
-    
-            for (const listenerFn of this.listeners) {
-                listenerFn(this.projects.slice());
-            }
-            this.updateListeners()
-        }
-    
-        switchProjectStatus(projectId:string, newStatus: ProjectStatus){
-           const project = this.projects.find(p => p.id === projectId);
-    
-           if(project != null && project.stattus !== newStatus){
-             project.stattus = newStatus;
-             this.updateListeners();
-           }
-        }
-    
-        private updateListeners(){
-            for (const listenerFn of this.listeners) {
-                listenerFn(this.projects.slice());
-            }
-        }
-    
-        addListener(listenerFn: Listener<Project>){
-            this.listeners.push(listenerFn);
-        }
-    }
-    //global instance single
-    const projectState = ProjectState.getInstance();
-    
-    //input validation
-    interface Validatable{
-        value: string | number;
-        required?: boolean;
-        minLength?: number;
-        maxLength?: number;
-        min?: number;
-        max?: number;
-    }
-    
-    function inputValidator(input: Validatable){
-        let isValid = true;
-        if(input.required){
-            isValid = isValid && input.value.toString().trim().length !== 0;
-        }
-        if(input.minLength != null && typeof input.value === 'string'){
-            isValid = isValid &&  input.value.length >= input.minLength;
-        }
-        if(input.maxLength != null && typeof input.value === 'string'){
-            isValid = isValid &&  input.value.length <= input.maxLength;
-        }
-        if(input.min != null && typeof input.value === 'number'){
-            isValid = isValid && input.value > input.min;
-        }
-        if(input.max != null && typeof input.value === 'number'){
-            isValid = isValid && input.value < input.max
-        }
-    
-        return isValid;
-    }
-    
-    //autobind decorator
-    function AutoBind(_: any, _2: string, descriptor: PropertyDescriptor){
-        const originalMetohd= descriptor.value; 
-        const adjDescriptor: PropertyDescriptor ={
-            configurable: true,
-            get () {
-                const boundFN = originalMetohd.bind(this);
-                return boundFN;
-            }
-        }
-        return adjDescriptor;
-    }
-    
     abstract class BaseComponent<T extends HTMLElement,U extends HTMLElement>{
         private templateElement: HTMLTemplateElement;
         protected hostElement: T; 

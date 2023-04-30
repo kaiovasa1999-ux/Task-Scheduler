@@ -23,8 +23,6 @@ var DragDrop;
     }
     DragDrop.Project = Project;
 })(DragDrop || (DragDrop = {}));
-/// <reference path="drag-drop-interfaces.ts" />
-/// <reference path="enums.ts" />
 var DragDrop;
 (function (DragDrop) {
     class State {
@@ -72,8 +70,12 @@ var DragDrop;
             this.listeners.push(listenerFn);
         }
     }
+    DragDrop.ProjectState = ProjectState;
     //global instance single
-    const projectState = ProjectState.getInstance();
+    DragDrop.projectState = ProjectState.getInstance();
+})(DragDrop || (DragDrop = {}));
+var App;
+(function (App) {
     function inputValidator(input) {
         let isValid = true;
         if (input.required) {
@@ -93,7 +95,10 @@ var DragDrop;
         }
         return isValid;
     }
-    //autobind decorator
+    App.inputValidator = inputValidator;
+})(App || (App = {}));
+var App;
+(function (App) {
     function AutoBind(_, _2, descriptor) {
         const originalMetohd = descriptor.value;
         const adjDescriptor = {
@@ -105,6 +110,15 @@ var DragDrop;
         };
         return adjDescriptor;
     }
+    App.AutoBind = AutoBind;
+})(App || (App = {}));
+/// <reference path="drag-drop-interfaces.ts" />
+/// <reference path="enums.ts" />
+/// <reference path="project-state.ts" />
+/// <reference path="validations.ts" />
+/// <reference path="decorators.ts" />
+var App;
+(function (App) {
     class BaseComponent {
         constructor(templateID, hostElementId, whenToInsert, elemntId) {
             this.templateElement = document.getElementById(templateID);
@@ -153,10 +167,10 @@ var DragDrop;
         }
     }
     __decorate([
-        AutoBind
+        App.AutoBind
     ], ProjectItem.prototype, "dragStartHandler", null);
     __decorate([
-        AutoBind
+        App.AutoBind
     ], ProjectItem.prototype, "dragEndHandler", null);
     class ProjectList extends BaseComponent {
         constructor(type) {
@@ -175,7 +189,7 @@ var DragDrop;
         }
         dropHandler(event) {
             const projectId = (event.dataTransfer.getData('text/plain'));
-            projectState.switchProjectStatus(projectId, this.type === 'active' ? DragDrop.ProjectStatus.Active : DragDrop.ProjectStatus.Finished);
+            projectState.switchProjectStatus(projectId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished);
         }
         dragLeaveHandler(_) {
             const listEl = this.element.querySelector('ul');
@@ -195,9 +209,9 @@ var DragDrop;
             projectState.addListener((projects) => {
                 const filterProjects = projects.filter(prj => {
                     if (this.type === 'active') {
-                        return prj.stattus === DragDrop.ProjectStatus.Active;
+                        return prj.stattus === ProjectStatus.Active;
                     }
-                    return prj.stattus === DragDrop.ProjectStatus.Finished;
+                    return prj.stattus === ProjectStatus.Finished;
                 });
                 debugger;
                 this.assignedProjects = filterProjects;
@@ -211,13 +225,13 @@ var DragDrop;
         }
     }
     __decorate([
-        AutoBind
+        App.AutoBind
     ], ProjectList.prototype, "dragOverHandler", null);
     __decorate([
-        AutoBind
+        App.AutoBind
     ], ProjectList.prototype, "dropHandler", null);
     __decorate([
-        AutoBind
+        App.AutoBind
     ], ProjectList.prototype, "dragLeaveHandler", null);
     //ProjectINput class
     class ProjectInput extends BaseComponent {
@@ -249,9 +263,9 @@ var DragDrop;
                 value: +peopleInputValue,
                 required: true,
             };
-            if (!inputValidator(titleInputValueValidatable) &&
-                !inputValidator(descInputValueValidatable) &&
-                !inputValidator(peopleInputValueValidatable)) {
+            if (!App.inputValidator(titleInputValueValidatable) &&
+                !App.inputValidator(descInputValueValidatable) &&
+                !App.inputValidator(peopleInputValueValidatable)) {
                 alert('invalid input please put longer inputs');
                 return;
             }
@@ -278,9 +292,9 @@ var DragDrop;
         renderContent() { }
     }
     __decorate([
-        AutoBind
+        App.AutoBind
     ], ProjectInput.prototype, "submitHandler", null);
     new ProjectInput();
     new ProjectList('active');
     new ProjectList('finished');
-})(DragDrop || (DragDrop = {}));
+})(App || (App = {}));
