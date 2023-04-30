@@ -1,4 +1,4 @@
-namespace DragDrop {
+namespace App {
     export  enum ProjectStatus{
         Active,
         Finished

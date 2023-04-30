@@ -1,4 +1,4 @@
-namespace DragDrop {
+namespace App {
     class State<T> {
         protected listeners: Listener<T>[] = [];//is array from functions actualy
     
@@ -56,7 +56,7 @@ namespace DragDrop {
             this.listeners.push(listenerFn);
         }
     }
-    
+
     //global instance single
     export const projectState = ProjectState.getInstance();
 }

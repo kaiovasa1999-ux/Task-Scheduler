@@ -5,13 +5,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var DragDrop;
-(function (DragDrop) {
+var App;
+(function (App) {
     let ProjectStatus;
     (function (ProjectStatus) {
         ProjectStatus[ProjectStatus["Active"] = 0] = "Active";
         ProjectStatus[ProjectStatus["Finished"] = 1] = "Finished";
-    })(ProjectStatus = DragDrop.ProjectStatus || (DragDrop.ProjectStatus = {}));
+    })(ProjectStatus = App.ProjectStatus || (App.ProjectStatus = {}));
     class Project {
         constructor(id, title, description, people, stattus) {
             this.id = id;
@@ -21,10 +21,10 @@ var DragDrop;
             this.stattus = stattus;
         }
     }
-    DragDrop.Project = Project;
-})(DragDrop || (DragDrop = {}));
-var DragDrop;
-(function (DragDrop) {
+    App.Project = Project;
+})(App || (App = {}));
+var App;
+(function (App) {
     class State {
         constructor() {
             this.listeners = []; //is array from functions actualy
@@ -47,7 +47,7 @@ var DragDrop;
             return this.instance;
         }
         addProject(title, desc, people) {
-            const newProject = new DragDrop.Project(Math.random().toString(), title, desc, people, DragDrop.ProjectStatus.Active);
+            const newProject = new App.Project(Math.random().toString(), title, desc, people, App.ProjectStatus.Active);
             this.projects.push(newProject);
             for (const listenerFn of this.listeners) {
                 listenerFn(this.projects.slice());
@@ -70,10 +70,10 @@ var DragDrop;
             this.listeners.push(listenerFn);
         }
     }
-    DragDrop.ProjectState = ProjectState;
+    App.ProjectState = ProjectState;
     //global instance single
-    DragDrop.projectState = ProjectState.getInstance();
-})(DragDrop || (DragDrop = {}));
+    App.projectState = ProjectState.getInstance();
+})(App || (App = {}));
 var App;
 (function (App) {
     function inputValidator(input) {
@@ -189,7 +189,7 @@ var App;
         }
         dropHandler(event) {
             const projectId = (event.dataTransfer.getData('text/plain'));
-            projectState.switchProjectStatus(projectId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished);
+            App.projectState.switchProjectStatus(projectId, this.type === 'active' ? App.ProjectStatus.Active : App.ProjectStatus.Finished);
         }
         dragLeaveHandler(_) {
             const listEl = this.element.querySelector('ul');
@@ -206,12 +206,12 @@ var App;
             this.element.addEventListener('dragover', this.dragOverHandler);
             this.element.addEventListener('dragleave', this.dragLeaveHandler);
             this.element.addEventListener('drop', this.dropHandler);
-            projectState.addListener((projects) => {
+            App.projectState.addListener((projects) => {
                 const filterProjects = projects.filter(prj => {
                     if (this.type === 'active') {
-                        return prj.stattus === ProjectStatus.Active;
+                        return prj.stattus === App.ProjectStatus.Active;
                     }
-                    return prj.stattus === ProjectStatus.Finished;
+                    return prj.stattus === App.ProjectStatus.Finished;
                 });
                 debugger;
                 this.assignedProjects = filterProjects;
@@ -280,7 +280,7 @@ var App;
             if (Array.isArray(userInput)) {
                 //tupple is array acutaliy
                 const [title, desc, people] = userInput;
-                projectState.addProject(title, desc, people); //
+                App.projectState.addProject(title, desc, people); //
                 this.clearInputs();
             }
         }
