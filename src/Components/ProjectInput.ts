@@ -1,3 +1,6 @@
+/// <reference path="../Util/validations.ts" />
+/// <reference path="../State/project-state.ts" />
+
 namespace App{
     
     export class ProjectInput extends BaseComponent<HTMLDivElement,HTMLFormElement> {
