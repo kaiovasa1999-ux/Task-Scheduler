@@ -53,7 +53,6 @@ namespace App{
     
                     return prj.stattus === ProjectStatus.Finished;
                 })
-                debugger;
                 this.assignedProjects = filterProjects;
                 this.renderProjects()
             })

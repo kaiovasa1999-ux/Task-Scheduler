@@ -17,7 +17,6 @@ namespace App{
         }
     
         public configure(){
-            debugger;
             this.element.addEventListener('submit',this.submitHandler);
         }
         private gethereUserInput(): [string, string, number] | void {
@@ -53,7 +52,6 @@ namespace App{
         @AutoBind
         private submitHandler(event: Event){
             event.preventDefault();
-            debugger;
             const userInput =this.gethereUserInput();
             if(Array.isArray(userInput)){
                 //tupple is array acutaliy
